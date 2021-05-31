@@ -1,0 +1,15 @@
+{
+  "name": "auth-nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "level": "^7.0.0",
+    "prompt-sync": "^4.2.0"
+  }
+}
