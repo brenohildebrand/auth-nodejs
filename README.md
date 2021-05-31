@@ -2,7 +2,7 @@
 
 <p align="justify"><b>Auth-nodejs</b> is a mini project, intended to sharp authentication skills of programmers. It uses <a href="https://github.com/Level/level">level</a> as the database and the console as the interface. The code should be clean, so it's easy to read and understand. Check it out!</p>
 
-<br/>
+<br/><h3>Getting Started</h3>
 
 ```bash
 $ git clone https://github.com/brenoh1ldebr4nd/auth-nodejs
@@ -17,10 +17,5 @@ $ npm install
 $ node main.js
 ```
 
-<br/>
-
-Here is how it looks like:
-
-<img src="auth-nodejs-screenshot.png" alt="auth-nodejs screenshot">
-
+<br/><h3>License</h3>
 This project is under the <a href="./LICENSE">MIT</a> license.
