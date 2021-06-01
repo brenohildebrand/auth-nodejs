@@ -1,9 +1,11 @@
 import level from 'level';
 import promptSync from 'prompt-sync';
 import chalk from 'chalk';
+import crypto from 'crypto';
 
 const prompt = promptSync();
-const version = '1.0.0';
+const version = '2.0.0';
+const hash = (pwd) => crypto.createHash('sha256').update(pwd).digest('hex');
 
 async function main() {
   console.log(chalk.green(`\nAuth v${version}`));
@@ -54,7 +56,7 @@ async function signUpAction() {
     );
     process.exit();
   }
-  await global.db.put(username, password);
+  await global.db.put(username, hash(password));
 }
 
 async function signInAction() {
@@ -71,7 +73,7 @@ async function signInAction() {
     process.exit();
   }
 
-  (await global.db.get(username).catch(() => undefined)) === password
+  (await global.db.get(username).catch(() => undefined)) === hash(password)
     ? console.log(chalk.green('\nUser recognized'))
     : console.log(chalk.red('\nUser not recognized'));
 }
