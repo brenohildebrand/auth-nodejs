@@ -6,11 +6,12 @@ import crypto from 'crypto';
 const prompt = promptSync();
 const version = '2.0.0';
 const hash = (pwd) => crypto.createHash('sha256').update(pwd).digest('hex');
+const generateSalt = () => crypto.randomBytes(32).toString('hex');
 
 async function main() {
   console.log(chalk.green(`\nAuth v${version}`));
 
-  global.db = level('./database', (err) => {
+  global.db = level('./database', { valueEncoding: 'json' }, (err) => {
     if (err) {
       console.log(
         chalk.red(`\nThere was an error while initializing the database.\n`),
@@ -47,6 +48,7 @@ async function signUpAction() {
   console.log(chalk.blue('\nSign Up'));
   const username = prompt('username: ');
   const password = prompt('password: ');
+  const salt = generateSalt();
 
   if (!username || !password) {
     console.log(
@@ -56,7 +58,12 @@ async function signUpAction() {
     );
     process.exit();
   }
-  await global.db.put(username, hash(password));
+
+  // Store username, salt and password in the database
+  await global.db.put(username, {
+    salt,
+    password: hash(password + salt),
+  });
 }
 
 async function signInAction() {
@@ -73,7 +80,11 @@ async function signInAction() {
     process.exit();
   }
 
-  (await global.db.get(username).catch(() => undefined)) === hash(password)
+  // Getting user from database
+  const user = await global.db.get(username).catch(() => undefined);
+
+  // Check if the user exists and if the password is correct
+  user && hash(password + user.salt) === user.password
     ? console.log(chalk.green('\nUser recognized'))
     : console.log(chalk.red('\nUser not recognized'));
 }
