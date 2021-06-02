@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import crypto from 'crypto';
 
 const prompt = promptSync();
-const version = '2.0.0';
+const version = '3.0.0';
 const hash = (pwd) => crypto.createHash('sha256').update(pwd).digest('hex');
 const generateSalt = () => crypto.randomBytes(32).toString('hex');
 
