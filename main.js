@@ -4,21 +4,10 @@ import chalk from 'chalk';
 import bcrypt from 'bcrypt';
 
 const prompt = promptSync();
-const version = '4.0.0';
+const version = '5.0.0';
 const saltRounds = 14;
-const generateSalt = async () => {
-  return await bcrypt.genSalt(saltRounds).catch((err) => {
-    console.log(
-      chalk.red(
-        '\nThere was an error while salting the password, please check the code or try again!\n',
-      ),
-    );
-
-    throw err;
-  });
-};
-const hash = async (pwd, salt) => {
-  return await bcrypt.hash(pwd, salt).catch((err) => {
+const hash = async (pwd) => {
+  return await bcrypt.hash(pwd, saltRounds).catch((err) => {
     console.log(
       chalk.red(
         '\nThere was an error while hashing the password, please check the code or try again!\n',
@@ -69,7 +58,6 @@ async function signUpAction() {
   console.log(chalk.blue('\nSign Up'));
   const username = prompt('username: ');
   const password = prompt('password: ');
-  const salt = await generateSalt();
 
   if (!username || !password) {
     console.log(
@@ -81,10 +69,7 @@ async function signUpAction() {
   }
 
   // Store username, salt and password in the database
-  await global.db.put(username, {
-    salt,
-    password: await hash(password, salt),
-  });
+  await global.db.put(username, await hash(password));
 }
 
 async function signInAction() {
@@ -101,11 +86,10 @@ async function signInAction() {
     process.exit();
   }
 
-  // Getting user from database
-  const user = await global.db.get(username).catch(() => undefined);
-
   // Check if the user exists and if the password is correct
-  user && (await hash(password, user.salt)) === user.password
+  (await bcrypt
+    .compare(password, await global.db.get(username).catch(() => undefined))
+    .catch(() => undefined))
     ? console.log(chalk.green('\nUser recognized'))
     : console.log(chalk.red('\nUser not recognized'));
 }
