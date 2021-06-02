@@ -8,6 +8,7 @@
     "start": "node main.js"
   },
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "chalk": "^4.1.1",
     "level": "^7.0.0",
     "prompt-sync": "^4.2.0"
