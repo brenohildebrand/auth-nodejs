@@ -32,7 +32,10 @@ $ node src/auth-nodejs-1.0.0.js
 5.0.0       | Bcrypt Code Style 
 6.0.0       | Pepper 
 
+<br>
+
 Go to the /src foder to find out each version or go to [releases](https://github.com/brenoh1ldebr4nd/auth-nodejs/releases "releases").
+
 Remember to delete the database every time you test another version ( unexpected errors could occur ).
 
 <br>
