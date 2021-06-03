@@ -3,8 +3,9 @@ import promptSync from 'prompt-sync';
 import chalk from 'chalk';
 import bcrypt from 'bcrypt';
 
+const pepper = '$5$%@98gHk14*(lK';
 const prompt = promptSync();
-const version = '5.0.0';
+const version = '6.0.0';
 const saltRounds = 14;
 const hash = async (pwd) => {
   return await bcrypt.hash(pwd, saltRounds).catch((err) => {
@@ -69,7 +70,7 @@ async function signUpAction() {
   }
 
   // Store username, salt and password in the database
-  await global.db.put(username, await hash(password));
+  await global.db.put(username, await hash(password + pepper));
 }
 
 async function signInAction() {
@@ -88,7 +89,10 @@ async function signInAction() {
 
   // Check if the user exists and if the password is correct
   (await bcrypt
-    .compare(password, await global.db.get(username).catch(() => undefined))
+    .compare(
+      password + pepper,
+      await global.db.get(username).catch(() => undefined),
+    )
     .catch(() => undefined))
     ? console.log(chalk.green('\nUser recognized'))
     : console.log(chalk.red('\nUser not recognized'));
